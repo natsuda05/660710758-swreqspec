@@ -121,3 +121,27 @@ Q-02 หมายเลขคิวรีเซ็ตรายวัน หร�
 ### หมายเหตุ
 - ไม่ได้แก้หรือลบบันทึกรอบก่อนหน้า ("ทีมตอบ Q-02") ตามกติกา ห้ามแก้บันทึกเดิม — เพิ่มบันทึกนี้ต่อท้ายแทนเพื่อบอกว่ายกเลิกผลของรอบนั้น
 - ทีมยังไม่ได้ให้คำตอบจริงสำหรับ Q-02 ณ ตอนนี้ ต้องถามเจ้าหน้าที่เวชระเบียนต่อไป
+
+---
+
+## 2569-09-23 /implement T-01 สร้างโครง FastAPI app
+
+- เครื่องมือ: Claude Code
+- คำสั่ง: `/implement T-01 specs/001-booking/tasks.md`
+
+### ไฟล์ที่สร้าง/แก้
+- `backend/app/config.py` (ใหม่) — อ่าน `DATABASE_URL` จากตัวแปรแวดล้อม (CON-TECH-01)
+- `backend/app/main.py` (ใหม่) — สร้าง FastAPI app และ endpoint `/health` เรียก config (CON-TECH-01)
+- `backend/tests/test_T01_app_boot.py` (ใหม่ นอกเหนือช่อง "ไฟล์ที่แตะ" ของ T-01 — ดูหัวข้อ "สิ่งที่เกือบต้องเดา" ด้านล่าง)
+- `specs/001-booking/tasks.md` — แก้สถานะ T-01 เป็น "เสร็จ รอทีมตรวจ" เท่านั้น
+
+### สิ่งที่เกือบต้องเดา แต่ถามทีมแทน
+- T-01 ในช่อง "ไฟล์ที่แตะ" ระบุแค่ `backend/app/main.py`, `backend/app/config.py` แต่คำสั่ง /implement กำหนดว่า task ที่ไม่มี AC ตรง ๆ ต้องมี test เล็ก ๆ ยืนยัน "เสร็จเมื่อ" ด้วย ซึ่งต้องสร้างไฟล์ test ใหม่ที่ไม่ได้อยู่ในช่อง "ไฟล์ที่แตะ" — ถามทีมแล้ว ทีมเลือก "เขียน test เพิ่ม" จึงสร้าง `backend/tests/test_T01_app_boot.py`
+
+### ผล test
+```
+cd backend && python3 -m pytest tests/test_T01_app_boot.py -v
+tests/test_T01_app_boot.py::test_T01_app_imports_and_reads_database_url PASSED
+1 passed, 1 warning in 0.87s
+```
+นอกจากนี้รัน `uvicorn app.main:app` จริงบนพอร์ตทดสอบและยิง `GET /health` ยืนยันว่าอ่านค่า `DATABASE_URL` ที่ตั้งไว้ได้ถูกต้อง ตรงกับช่อง "เสร็จเมื่อ" ของ T-01 ทุกประการ

@@ -12,7 +12,7 @@ Spec ID: SPEC-BKG-001 | อ้างอิง: plan.md (plan v1) | สร้า�
 - ไฟล์ที่แตะ: `backend/app/main.py`, `backend/app/config.py`
 - ต้องทำหลัง: ไม่มี
 - เสร็จเมื่อ: `uvicorn app.main:app` เปิดขึ้นได้ และอ่านค่า `DATABASE_URL` จาก config ได้
-- สถานะ: พร้อมทำ
+- สถานะ: เสร็จ รอทีมตรวจ
 
 ### T-02 สร้างโมเดลข้อมูล SQLAlchemy
 - รองรับ: CON-TECH-01, DOM-PDPA-01, IF-HIS-01
