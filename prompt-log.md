@@ -199,3 +199,14 @@
 - ส่วนที่ติด Q-02: หมายเลขคิวเดิมในคำตอบและบนหน้าจอ (TC-BKG-02-1, -2, -3), queue_no (TC-BKG-02-4)
 - ส่วนที่ spec ไม่ได้บอก (เสนอเป็นคำถาม): รหัสตอบกลับ/รูปแบบคำตอบเมื่อปฏิเสธการจองซ้ำ (plan ข้อ 4 ไม่ได้กำหนด), ข้อความแจ้งบนหน้าจอ, คิวที่ "ใช้แล้ว" ยังนับเป็น 1 รายการต่อวันหรือไม่ และสถานะ "ใช้แล้ว" คืออะไร
 - ยังไม่เขียนโค้ด test / ผล test: ไม่ได้รัน (โหมดร่าง)
+
+---
+
+## 2569-10-07 ทีมวางขั้นตอน lab "ui lab start" และ AI พบว่าไฟล์ไปอยู่ผิดที่
+
+- ปัญหา: 4 บรรทัดของ lab ถูกรันใน backend/ (commit 649d042 push แล้ว) ไฟล์ lab ไปอยู่ใต้ backend/, `cat ui-section.md >> spec.md` สร้าง backend/specs/001-booking/spec.md ใหม่แทนการต่อท้าย spec จริง, sed ไม่ได้เปลี่ยน tasks.md
+- ทีมเลือก: ให้ AI ย้ายให้
+- AI ทำ: git mv ไฟล์ lab จาก backend/ ไป root (.claude .cursor .github docs frontend/src specs/001-booking/mockups ui-section.md) ลบ backend/specs/001-booking/spec.md (เนื้อหาเหมือน ui-section.md ทุกตัวอักษร) ต่อหมวด "หน้าจอ (UI)" ท้าย specs/001-booking/spec.md ตามบรรทัดที่ 2 ของ lab และเปลี่ยน T-10, T-11 เป็น "เสร็จ รอทีมตรวจ" ตามบรรทัดที่ 3
+- ตรวจ: ไฟล์ที่ root ตรงกับ tar ของ lab ทุกไฟล์ / backend/ เหลือแค่ app tests pytest.ini requirements.txt
+- ผล npm test: 3 passed, 1 todo (AC-BKG-03.test.jsx, setup.test.jsx, SlotPicker.test.jsx ผ่าน / TC-BKG-01-2 todo)
+- ยังไม่ commit / push รอทีมสั่ง
