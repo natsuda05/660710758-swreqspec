@@ -118,3 +118,14 @@
 - test เดิม 4 ตัว (test_AC_BKG_01, test_AC_BKG_05, test_T01_tables_created, test_T01_no_national_id) อยู่ครบ ไม่ได้แตะ
 - ไม่ได้แก้ test-cases.md (แถว -5 และ -7 ยังเป็น "ร่าง" และตอนนี้ไม่มี test) และไม่ได้แตะ TC-BKG-01-2.test.jsx (test.todo ฝั่งหน้าจอ ไม่นับใน pytest)
 - ผล pytest: 7 test / 6 passed, 1 failed (test_TC_BKG_01_4_no_seat_left บั๊กที่ backend/app/booking/service.py:26 ยังไม่ได้แก้)
+
+---
+
+## 2569-10-07 08.43 คำสั่ง: /verify specs/001-booking/
+
+- สร้าง specs/001-booking/rtm.md (ครั้งแรก ไม่มี rtm.md เดิม) ไม่ได้แก้โค้ด test spec plan tasks
+- ผล test: pytest 6 passed, 1 failed (test_TC_BKG_01_4_no_seat_left) / vitest 1 passed, 1 todo
+- ตารางไปข้างหน้า 15 แถว: ครบ 1 / ยังไม่ถึง 6 / รอ 0 / ช่องโหว่ 8
+- ข้อค้นพบใหม่: F-01 ถึง F-13
+  - F-01 remaining < 0 จองเกินโควตา, F-02 national_id ใน request และ log (IF-HIS-01), F-03 idp เชื่อ header ไม่ถามระบบยืนยันตัวตน (IF-IDP-01), F-04 DAYS_AHEAD 14 ไม่ใช่ 30, F-05 DELETE /bookings อยู่ใน Out of scope, F-06 cancel อ้าง FR-BKG-04 ผิดเรื่อง, F-07 เลขคิว A001 เดา Q-02, F-08 test_AC_BKG_01 assert แค่ 201, F-09 test_AC_BKG_05 ไม่ได้ยิงพร้อมกัน, F-10 ถึง F-13 FR/NFR ไม่มี AC (FR-BKG-01, FR-BKG-06, NFR-SEC-01, NFR-USE-01)
+- หมายเหตุ: CON-TECH-01 ให้สถานะ "ครบ" ทั้งที่ไม่มี AC เพราะ tasks.md กำหนดให้ตรวจด้วย test ของ T-01 ทีมต้องยืนยัน
