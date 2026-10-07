@@ -78,3 +78,43 @@
   - กรณี: โค้ดทำไม่ตรง spec (บั๊ก) backend/app/booking/service.py:26 ใช้ `slot.remaining < 0` ทำให้จองช่วงที่ว่าง 0 ที่ได้ และ remaining ติดลบ
 - ผล npm test: 1 passed, 1 todo
 - ข้อสังเกต (ไม่ได้แก้): service.py:18 ออกเลขคิวรูปแบบ A001 รีเซ็ตรายวันไปก่อน ทั้งที่ Q-02 ยังไม่ได้คำตอบ, router.py:25 เขียน national_id ลง log (ขัดกับเจตนาของ IF-HIS-01), DELETE /bookings อยู่ใน Out of scope (UC-02)
+
+---
+
+## 2569-10-07 คำสั่ง: /testcases AC-BKG-01 specs/001-booking/ (รอบที่ 3)
+
+- โหมด: เขียน test แต่ไม่มีแถว "ใช้ได้" ที่ยังไม่มี test จึงไม่ได้เขียนโค้ดเพิ่ม
+- สถานะในตารางตอนนี้ (หลัง commit dc1330c): TC-BKG-01-1 "ใช้ได้" (มี test แล้ว) / TC-BKG-01-2 ถึง -7 "ร่าง"
+- พบว่าแถว -2, -4, -5, -6, -7 เป็น "ร่าง" แต่มีโค้ด test ที่เขียนไว้ในรอบก่อนแล้ว ไม่ได้ลบหรือแก้ test รอทีมตัดสิน
+- ผล pytest (รันซ้ำ): 8 passed, 1 failed (test_TC_BKG_01_4_no_seat_left บั๊กเดิมที่ backend/app/booking/service.py:26 ยังไม่ได้แก้)
+
+---
+
+## 2569-10-07 คำสั่ง: /testcases AC-BKG-01 specs/001-booking/ (รอบที่ 4)
+
+- โหมด: เขียน test แต่ไม่มีแถว "ใช้ได้" ที่ยังไม่มี test (สถานะในตารางเหมือนรอบที่ 3) จึงไม่ได้เขียนโค้ดเพิ่ม
+- ถามทีมว่าจะจัดการแถว TC-BKG-01-2 ถึง -7 ที่เป็น "ร่าง" แต่มี test แล้วอย่างไร
+- ทีมตอบ: "ลบ test ของแถวร่าง"
+- AI ลบ test_TC_BKG_01_4, _5, _6, _7 ออกจาก backend/tests/test_AC_BKG_01.py (6 ตัว -> 2 ตัว: test_AC_BKG_01 และ test_TC_BKG_01_1 อยู่ครบ) และลบ frontend/src/__tests__/TC-BKG-01-2.test.jsx
+- เหตุผล: แถวเหล่านี้กลับเป็น "ร่าง" (ยังไม่มีใครตรวจ) จึงยังไม่ควรมี test ในโค้ด
+- ผล pytest: 5 passed / ผล npm test: 1 passed
+- หมายเหตุ: บั๊กที่ backend/app/booking/service.py:26 (`remaining < 0`) ยังอยู่ ตอนนี้ไม่มี test จับแล้ว จะกลับมาไม่ผ่านเมื่อทีมเปลี่ยน TC-BKG-01-4 เป็น "ใช้ได้" แล้วเขียน test ใหม่
+
+---
+
+## 2569-10-07 ทีมสั่ง: "คืน test_AC_BKG_01 เดิมกลับมา ห้ามลบ test เดิม"
+
+- AI คืน backend/tests/test_AC_BKG_01.py และ frontend/src/__tests__/TC-BKG-01-2.test.jsx กลับเป็นเหมือน commit dc1330c (ยกเลิกการลบในบันทึกก่อนหน้า)
+- test ในไฟล์กลับมาครบ 6 ตัว: test_AC_BKG_01, test_TC_BKG_01_1, _4, _5, _6, _7
+- ผล pytest: 8 passed, 1 failed (test_TC_BKG_01_4_no_seat_left บั๊กที่ backend/app/booking/service.py:26) / ผล npm test: 1 passed, 1 todo
+- บทเรียน: การลบ test ที่ commit แล้วถือเป็นการลบ test เดิม ห้ามทำ แม้สถานะแถวในตารางจะเปลี่ยนกลับเป็น "ร่าง"
+
+---
+
+## 2569-10-07 ทีมสั่ง: "ทำให้เป็น 7 ได้มั้ย" (ให้ pytest -v เห็น 7 test ตามคู่มือ lab: เดิม 4 ใหม่ 3)
+
+- AI ถามว่าจะเก็บ test ใหม่ตัวไหน ทีมตอบ: เก็บ TC-BKG-01-1 (ทางปกติ), -4 (ขอบ), -6 (ทางผิด)
+- AI ลบ test_TC_BKG_01_5_two_seats_left และ test_TC_BKG_01_7_slot_not_found ออกจาก backend/tests/test_AC_BKG_01.py
+- test เดิม 4 ตัว (test_AC_BKG_01, test_AC_BKG_05, test_T01_tables_created, test_T01_no_national_id) อยู่ครบ ไม่ได้แตะ
+- ไม่ได้แก้ test-cases.md (แถว -5 และ -7 ยังเป็น "ร่าง" และตอนนี้ไม่มี test) และไม่ได้แตะ TC-BKG-01-2.test.jsx (test.todo ฝั่งหน้าจอ ไม่นับใน pytest)
+- ผล pytest: 7 test / 6 passed, 1 failed (test_TC_BKG_01_4_no_seat_left บั๊กที่ backend/app/booking/service.py:26 ยังไม่ได้แก้)
