@@ -78,3 +78,35 @@ def test_TC_BKG_01_6_not_authenticated(client, db, make_slot):
     # Then (2) ที่นั่งว่างของช่วง 09.00 น. ยังเป็น 1
     assert _remaining(db, slot.id) == 1
     # Then (3) รหัสตอบกลับ / ข้อความแจ้ง: spec ไม่ได้บอก จึงยังไม่ตรวจ
+
+
+def test_TC_BKG_01_5_two_seats_left(client, db, make_slot):
+    """TC-BKG-01-5 (AC-BKG-01 ขอบ)"""
+    # Given ยืนยันตัวตนแล้ว และช่วง 09.00 น. มีที่นั่งว่าง 2 ที่
+    slot = make_slot(start="09:00", remaining=2)
+
+    # When ยืนยันการจองช่วง 09.00 น.
+    res = client.post("/bookings", json={"slot_id": slot.id}, headers=AUTH)
+
+    # Then (1) บันทึกสำเร็จ
+    bookings = _bookings_of_slot(db, slot.id)
+    assert len(bookings) == 1
+    assert bookings[0].hn == "0001234"
+    # Then (2) คำตอบมี queue_no (รอ Q-02)
+    # ยังไม่ตรวจ เพราะรอ Q-02 (รูปแบบหมายเลขคิว)
+    # Then (3) ที่นั่งว่างของช่วง 09.00 น. เป็น 1 (ตัดที่นั่ง 1 ที่ต่อ 1 การจอง ตาม FR-BKG-04)
+    assert _remaining(db, slot.id) == 1
+
+
+def test_TC_BKG_01_7_slot_not_found(client, db, make_slot):
+    """TC-BKG-01-7 (AC-BKG-01 ทางผิด)"""
+    # Given ยืนยันตัวตนแล้ว แต่ไม่มีช่วงเวลาตาม slot_id ที่ส่งมา
+    missing_slot_id = 9999
+
+    # When ยืนยันการจองด้วย slot_id ที่ไม่มีอยู่
+    client.post("/bookings", json={"slot_id": missing_slot_id}, headers=AUTH)
+
+    # Then (1) ไม่มีรายการจองถูกบันทึก (FR-BKG-04 บันทึกเฉพาะเมื่อยืนยันสำเร็จ)
+    db.expire_all()
+    assert db.scalars(select(Booking)).all() == []
+    # Then (2) รหัสตอบกลับ / ข้อความแจ้ง: spec ไม่ได้บอก จึงยังไม่ตรวจ

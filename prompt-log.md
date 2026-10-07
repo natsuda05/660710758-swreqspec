@@ -140,3 +140,51 @@
 - ไม่ได้แก้ test หรือไฟล์อื่น
 - ผล pytest -v: 7 passed, 1 warning (warning คือ httpx deprecation ของ starlette ไม่เกี่ยวกับ test)
 - F-01 ใน rtm.md ยังไม่ได้ย้ายไปหัวข้อ "แก้แล้ว" จะย้ายเมื่อรัน /verify รอบถัดไป
+
+---
+
+## 2569-10-07 08.57 คำสั่ง: /verify specs/001-booking/ (รอบที่ 2)
+
+- แก้เฉพาะ specs/001-booking/rtm.md ไม่ได้แก้โค้ด test spec plan tasks
+- ผล test: pytest 7 passed, 0 failed / vitest 1 passed, 1 todo
+- ตารางไปข้างหน้า 15 แถว: ครบ 1 / ยังไม่ถึง 6 / รอ 0 / ช่องโหว่ 8
+- แก้แล้ว: F-01 (service.py:26 เป็น `<= 0` และ test_TC_BKG_01_4 ผ่าน) ย้ายไปหัวข้อ "แก้แล้ว"
+- ข้อค้นพบเดิมที่ยังเจอ: F-02 ถึง F-13 (ช่อง "ทีมตัดสิน" ยังว่างทุกข้อ)
+- ข้อค้นพบใหม่: F-14 (AC ไม่มี test: TC-BKG-01-5 และ -7 สถานะ "ใช้ได้" แต่ไม่มี test ในโค้ด)
+
+---
+
+## 2569-10-07 ทีมสั่ง: หาอีก 3 จุดในโค้ด (คำถามข้อ 2, 3, 4 ของ /verify ขั้นที่ 4 อย่างละ 1 จุด) จุดที่ rtm.md ไม่มีให้เพิ่มแถว
+
+- AI grep backend/app/ ใหม่ทั้ง 3 ข้อ
+  - ข้อ 2 ตัวเลข: app/slots/service.py:10 DAYS_AHEAD = 14 (spec 30 วัน) -> มีใน rtm.md แล้ว F-04
+  - ข้อ 3 เดา: app/booking/service.py:13-18 next_queue_no รูปแบบ A001 -> มีใน rtm.md แล้ว F-07
+  - ข้อ 4 Constraint: app/booking/router.py:19, :25 national_id ใน request และ log -> มีใน rtm.md แล้ว F-02
+- ไม่เจอจุดอื่นเพิ่ม จึงไม่ได้เพิ่มแถวใน rtm.md และไม่ได้แก้ไฟล์อื่น
+
+---
+
+## 2569-10-07 ทีมสั่ง: "แก้ตาม F-xx ใน specs/001-booking/rtm.md แตะเฉพาะไฟล์ที่เกี่ยวข้อง ห้ามแก้ test ที่ชื่อขึ้นต้นด้วย test_TC_ แล้วรัน pytest -v และจดใน prompt-log"
+
+- ช่อง "ทีมตัดสิน" ใน rtm.md ว่างทุกแถว AI ถาม ทีมตอบ "ใช้ข้อเสนอทั้งหมด" (ข้อเสนอที่ AI ให้ไว้ในแชตก่อนหน้า) AI จึงเขียนคำตัดสินนั้นลงช่อง "ทีมตัดสิน" ของ F-02 ถึง F-14
+- แก้โค้ดเฉพาะแถว "แก้โค้ด"
+  - F-02: backend/app/booking/router.py ลบ national_id ออกจาก BookingRequest และออกจาก logger.info
+  - F-04: backend/app/slots/service.py DAYS_AHEAD 14 -> 30 (คงเงื่อนไข <= end: วันที่ +30 แสดง วันที่ +31 ไม่แสดง)
+  - F-05, F-06: ลบ DELETE /bookings/{id} (router.py) และ cancel_booking (service.py) เพราะอยู่ใน Out of scope (UC-02)
+  - F-07: backend/app/booking/service.py ลบ next_queue_no (รูปแบบ A001) queue_no ว่างไว้จนกว่า Q-02 จะได้คำตอบ
+  - F-14: เพิ่ม test_TC_BKG_01_5_two_seats_left และ test_TC_BKG_01_7_slot_not_found ต่อท้าย backend/tests/test_AC_BKG_01.py (โค้ดเดียวกับใน commit dc1330c ตามแถว "ใช้ได้") test ในไฟล์ 4 -> 6 ไม่ได้แก้หรือลบ test เดิม
+- ไม่ได้ทำ (ไม่ใช่ "แก้โค้ด"): F-03 เพิ่ม Q-03, F-09 ถึง F-13 แก้ spec (ยังไม่แก้ spec.md รอทีมสั่งแยก), F-08 ไม่ใช่ปัญหา
+- ผล pytest -v: 9 passed, 1 warning (httpx deprecation)
+- หมายเหตุ: pytest เห็น 9 ตัว ไม่ใช่ 7 ตามคู่มือ lab เพราะเพิ่ม test ตาม F-14 / ช่วง 30 วันนับวันนี้รวมด้วยหรือไม่ spec ไม่ได้บอก (เสนอให้ตอบตอนเพิ่ม AC ตาม F-10)
+
+---
+
+## 2569-10-07 09.12 คำสั่ง: /verify specs/001-booking/ (รอบที่ 3)
+
+- แก้เฉพาะ specs/001-booking/rtm.md (คงช่อง "ทีมตัดสิน" ทุกตัวอักษร คงบรรทัด "สรุป" ท้ายไฟล์ที่ทีมพิมพ์ไว้)
+- ผล test: pytest 9 passed, 0 failed / vitest 1 passed, 1 todo
+- ตารางไปข้างหน้า 15 แถว: ครบ 1 / ยังไม่ถึง 7 / รอ Q-02 1 / ช่องโหว่ 6
+- ย้ายไป "แก้แล้ว": F-02, F-04, F-05, F-06, F-07, F-14 (ยืนยันจากการอ่านโค้ด grep และผล pytest)
+- ยังเจออยู่: F-03 (ตัดสิน "เพิ่ม Q-03" แต่ยังไม่มี Q-03 ใน spec.md), F-08 (ไม่ใช่ปัญหา), F-09 ถึง F-13 (ตัดสิน "แก้ spec" แต่ spec.md ยังไม่ได้แก้)
+- ข้อค้นพบใหม่: ไม่มี
+- หมายเหตุ: Q-03 ที่ทีมวางมาในแชต (เลขบัตรใน log) ใช้เลขเดียวกับ Q-03 ในคำตัดสินของ F-03 (ตัวจำลองยืนยันตัวตน) ทีมต้องจัดเลข Q ก่อนเพิ่มลง spec.md
