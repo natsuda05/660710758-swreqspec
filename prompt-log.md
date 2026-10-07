@@ -63,3 +63,18 @@
 
 - แก้เฉพาะช่องสถานะของ TC-BKG-01-1 ถึง TC-BKG-01-7 (ทีมตรวจแล้ว ไม่ได้แก้เนื้อหาแถว)
 - คำอธิบายสถานะในหัวไฟล์คงเดิม
+
+---
+
+## 2569-10-07 คำสั่ง: /testcases AC-BKG-01 specs/001-booking/
+
+- โหมด: เขียน test (แถว TC-BKG-01-1 ถึง -7 สถานะ "ใช้ได้")
+- เขียน test หลังบ้าน 5 ตัว ต่อท้าย backend/tests/test_AC_BKG_01.py (ก่อน 1 ตัว หลัง 6 ตัว test เดิมอยู่ครบ):
+  test_TC_BKG_01_1, _4, _5, _6, _7
+- หน้าจอ: frontend/src/__tests__/TC-BKG-01-2.test.jsx เป็น test.todo เพราะ Then ส่วนเดียวรอ Q-02 และ BookingResult ยังไม่มี (T-06 รอ Q-02)
+- TC-BKG-01-3 (คน) ไม่เขียนโค้ด ให้ทีมลองเอง
+- ส่วนที่ไม่ assert: queue_no (รอ Q-02), รหัสตอบกลับใน TC-BKG-01-6 และ -7 (spec ไม่ได้บอก)
+- ผล pytest: 8 passed, 1 failed (test_TC_BKG_01_4_no_seat_left)
+  - กรณี: โค้ดทำไม่ตรง spec (บั๊ก) backend/app/booking/service.py:26 ใช้ `slot.remaining < 0` ทำให้จองช่วงที่ว่าง 0 ที่ได้ และ remaining ติดลบ
+- ผล npm test: 1 passed, 1 todo
+- ข้อสังเกต (ไม่ได้แก้): service.py:18 ออกเลขคิวรูปแบบ A001 รีเซ็ตรายวันไปก่อน ทั้งที่ Q-02 ยังไม่ได้คำตอบ, router.py:25 เขียน national_id ลง log (ขัดกับเจตนาของ IF-HIS-01), DELETE /bookings อยู่ใน Out of scope (UC-02)
