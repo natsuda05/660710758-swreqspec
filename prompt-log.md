@@ -129,3 +129,14 @@
 - ข้อค้นพบใหม่: F-01 ถึง F-13
   - F-01 remaining < 0 จองเกินโควตา, F-02 national_id ใน request และ log (IF-HIS-01), F-03 idp เชื่อ header ไม่ถามระบบยืนยันตัวตน (IF-IDP-01), F-04 DAYS_AHEAD 14 ไม่ใช่ 30, F-05 DELETE /bookings อยู่ใน Out of scope, F-06 cancel อ้าง FR-BKG-04 ผิดเรื่อง, F-07 เลขคิว A001 เดา Q-02, F-08 test_AC_BKG_01 assert แค่ 201, F-09 test_AC_BKG_05 ไม่ได้ยิงพร้อมกัน, F-10 ถึง F-13 FR/NFR ไม่มี AC (FR-BKG-01, FR-BKG-06, NFR-SEC-01, NFR-USE-01)
 - หมายเหตุ: CON-TECH-01 ให้สถานะ "ครบ" ทั้งที่ไม่มี AC เพราะ tasks.md กำหนดให้ตรวจด้วย test ของ T-01 ทีมต้องยืนยัน
+
+---
+
+## 2569-10-07 ทีมสั่ง: แก้ backend/app/booking/service.py ให้ปฏิเสธการจองเมื่อไม่มีที่นั่ง (F-01) ห้ามแก้ test
+
+- ทีมอ้าง "TC-BKG-01-2" แต่ test ที่ไม่ผ่านเพราะเรื่องนี้คือ TC-BKG-01-4 (test_TC_BKG_01_4_no_seat_left) AI แจ้งทีมแล้วแก้ตามเจตนา
+- แก้ 1 บรรทัด: backend/app/booking/service.py:26 `if slot.remaining < 0:` -> `if slot.remaining <= 0:`
+- เหตุผล: เมื่อที่นั่งเหลือ 0 เงื่อนไขเดิมเป็น False ทำให้จองได้และ remaining ติดลบ ขัดกับ FR-BKG-04, FR-BKG-03
+- ไม่ได้แก้ test หรือไฟล์อื่น
+- ผล pytest -v: 7 passed, 1 warning (warning คือ httpx deprecation ของ starlette ไม่เกี่ยวกับ test)
+- F-01 ใน rtm.md ยังไม่ได้ย้ายไปหัวข้อ "แก้แล้ว" จะย้ายเมื่อรัน /verify รอบถัดไป
