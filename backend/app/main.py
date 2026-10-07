@@ -1,13 +1,21 @@
-"""รองรับ CON-TECH-01: โครง FastAPI app เริ่มต้น (รวม router ของ task อื่นภายหลัง)"""
+# สร้าง FastAPI app และรวม router (T-02, T-03)
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 
-from app.config import get_settings
+from app.booking.router import router as booking_router
+from app.db.models import Base
+from app.db.session import engine
+from app.slots.router import router as slots_router
 
-app = FastAPI(title="Booking API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """สร้างตารางเมื่อเปิดหลังบ้าน (ใช้ migration 001_init แบบย่อ)"""
+    Base.metadata.create_all(engine)
+    yield
 
 
-@app.get("/health")
-def health() -> dict:
-    """รองรับ CON-TECH-01: endpoint ตรวจสอบว่า app ขึ้นและอ่านค่า config ได้"""
-    settings = get_settings()
-    return {"status": "ok", "database_url": settings.database_url}
+app = FastAPI(title="จองคิวตรวจสุขภาพ", lifespan=lifespan)
+app.include_router(slots_router)
+app.include_router(booking_router)

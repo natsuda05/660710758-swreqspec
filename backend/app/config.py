@@ -1,14 +1,7 @@
-"""รองรับ CON-TECH-01: อ่าน DATABASE_URL (PostgreSQL) จากตัวแปรแวดล้อม"""
+# อ่านค่าตั้งระบบจากตัวแปรสภาพแวดล้อม (CON-TECH-01)
 import os
-from functools import lru_cache
 
-
-class Settings:
-    def __init__(self) -> None:
-        self.database_url = os.environ.get("DATABASE_URL", "sqlite:///:memory:")
-
-
-@lru_cache
-def get_settings() -> Settings:
-    """รองรับ CON-TECH-01: คืนค่า Settings เดียวกันทุกครั้งที่เรียกในโปรเซสเดียว"""
-    return Settings()
+# ระบบจริงตั้ง DATABASE_URL เป็น PostgreSQL ตาม CON-TECH-01
+# เช่น postgresql+psycopg://user:pass@db:5432/checkup
+# ค่าเริ่มต้นเป็น SQLite ไว้ลองรันใน Codespace เท่านั้น
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
