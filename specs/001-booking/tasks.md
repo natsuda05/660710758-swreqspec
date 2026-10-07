@@ -1,8 +1,9 @@
 # Tasks: จองคิวตรวจสุขภาพ (Booking)
 Spec ID: SPEC-BKG-001 | อ้างอิง: plan.md (plan v1) | สร้างด้วย /tasks | วันที่: 2569-09-23
 
-> ทำทั้งหมด 21 task (T-01 ถึง T-21)
+> ทำทั้งหมด 22 task (T-01 ถึง T-22)
 > มี 1 task ที่ต้องรอ Open Question: T-17 รอ Q-02 (รูปแบบหมายเลขคิว)
+> แก้ไข 2569-09-23: เพิ่ม T-22 (เชื่อมหน้าจอเข้ากับ App.jsx) เพราะ T-18/T-19/T-20/T-21 เดิมไม่มี task ไหนแตะ App.jsx เลย ทำให้เปิด `npm run dev` แล้วไม่เห็นหน้าจอใด ๆ — ดูรายละเอียดใน prompt-log.md
 
 ## รายการ Task
 
@@ -148,7 +149,7 @@ Spec ID: SPEC-BKG-001 | อ้างอิง: plan.md (plan v1) | สร้า�
 - ไฟล์ที่แตะ: `frontend/src/pages/SlotPicker.jsx`, `frontend/src/api/client.js` (ฟังก์ชันจำลอง)
 - ต้องทำหลัง: ไม่มี
 - เสร็จเมื่อ: หน้าจอแสดงช่วงเวลาและที่นั่งคงเหลือจาก API จำลอง และโหลดช่วงเวลาใหม่เมื่อเปลี่ยนแพ็กเกจ
-- สถานะ: พร้อมทำ
+- สถานะ: เสร็จ รอทีมตรวจ
 
 ### T-19 สร้างหน้า ConfirmBooking (ยืนยันการจอง)
 - รองรับ: FR-BKG-03, FR-BKG-04
@@ -170,8 +171,16 @@ Spec ID: SPEC-BKG-001 | อ้างอิง: plan.md (plan v1) | สร้า�
 - รองรับ: FR-BKG-01, FR-BKG-03
 - ตรวจด้วย: ไม่มี AC ตรง ๆ เป็นงานรวมระบบ (integration) ของ T-06, T-11, T-18, T-19, T-20
 - ไฟล์ที่แตะ: `frontend/src/api/client.js`, `frontend/src/pages/SlotPicker.jsx`, `frontend/src/pages/ConfirmBooking.jsx`, `frontend/src/pages/BookingResult.jsx`
-- ต้องทำหลัง: T-06, T-11, T-18, T-19, T-20
+- ต้องทำหลัง: T-06, T-11, T-18, T-19, T-20, T-22
 - เสร็จเมื่อ: เปิด `npm run dev` พร้อมหลังบ้านจริง แล้วจองคิวจบกระบวนการได้โดยไม่ใช้ API จำลอง
+- สถานะ: พร้อมทำ
+
+### T-22 เชื่อมหน้าจอ SlotPicker/ConfirmBooking/BookingResult เข้ากับ App.jsx
+- รองรับ: FR-BKG-01, FR-BKG-03, FR-BKG-04, FR-BKG-05, FR-BKG-06
+- ตรวจด้วย: ไม่มี AC ตรง ๆ เป็นงานพื้นฐานของ T-21
+- ไฟล์ที่แตะ: `frontend/src/App.jsx`
+- ต้องทำหลัง: T-18, T-19, T-20
+- เสร็จเมื่อ: เปิด `npm run dev` แล้วเห็นหน้า SlotPicker ก่อน เลือกช่วงเวลาแล้วไปหน้า ConfirmBooking ยืนยันแล้วไปหน้า BookingResult ได้ครบทั้งกระบวนการ (ใช้ API จำลองของแต่ละหน้าเดิม ยังไม่ต่อ backend จริง ใช้ React state ควบคุมขั้นตอน ไม่เพิ่ม router library เพราะ plan.md ไม่ได้ระบุ)
 - สถานะ: พร้อมทำ
 
 ## ตารางตรวจความครบ
